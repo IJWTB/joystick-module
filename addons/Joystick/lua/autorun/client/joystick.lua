@@ -211,14 +211,14 @@ include( "joyconfig.lua" )
 local joysticknetstart = joysticknetstart
 _G.joysticknetstart = nil
 
-timer.Simple( 0.1, function( )
-	hook.Call( "JoystickInitialize", GAMEMODE )
+hook.Add( "Initialize", "JoystickInitialize", function()
+	hook.Run( "JoystickInitialize" )
 	
 	-- TODO: Load saved files here
 	joystick.initialized = true
 	joysticknetstart()
 	joystick.postnetstart = true
 	
-	hook.Call( "PostJoystickInitialize", GAMEMODE )
+	hook.Run( "PostJoystickInitialize" )
 	joystick.postinitialized = true
-end)
+end )

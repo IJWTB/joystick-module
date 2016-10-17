@@ -336,7 +336,7 @@ end
 concommand.Add( "j", joystick.ccupdate )
 concommand.Add( "ja", joystick.ccupdate )
 
-timer.Simple( 0.1, function( )
-	hook.Call( "JoystickInitialize", GAMEMODE )
-	hook.Call( "PostJoystickInitialize", GAMEMODE )
-end)
+hook.Add( "Initialize", "JoystickInitialize", function()
+	hook.Run( "JoystickInitialize" )
+	hook.Run( "PostJoystickInitialize" )
+end )
