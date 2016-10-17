@@ -1,19 +1,14 @@
+ENT.Type = "anim"
+ENT.Base = "base_wire_entity"
 
+ENT.PrintName    = ""
+ENT.Author       = ""
+ENT.Contact      = ""
+ENT.Purpose      = ""
+ENT.Instructions = ""
 
-ENT.Type 			= "anim"
-ENT.Base 			= "base_wire_entity"
-
-ENT.PrintName		= ""
-ENT.Author			= ""
-ENT.Contact			= ""
-ENT.Purpose			= ""
-ENT.Instructions	= ""
-
-ENT.Spawnable			= false
-ENT.AdminSpawnable		= false
-
-
-
+ENT.Spawnable      = false
+ENT.AdminSpawnable = false
 
 function ENT:SetEffect( name )
 	self.Entity:SetNetworkedString( "Effect", name )
@@ -22,7 +17,6 @@ end
 function ENT:GetEffect( name )
 	return self.Entity:GetNetworkedString( "Effect" )
 end
-
 
 function ENT:SetOn( boolon )
 	self.Entity:SetNetworkedBool( "On", boolon, true )

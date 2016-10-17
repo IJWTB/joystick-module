@@ -1,8 +1,7 @@
-if true then
+if ( true ) then
 	return
 end
-
-/*
+--[[
 The only things you should use from a joystick register:
 
 reg.IsJoystickReg
@@ -11,9 +10,9 @@ reg:GetType()
 reg:GetDescription()
 reg:GetCategory()
 reg:IsBound()
-*/
+]]
 
-// Example registering controls
+-- Example registering controls
 local exjcon = {}
 
 local joyexample = function()
@@ -115,29 +114,28 @@ local joyexample = function()
 		category = "Fight Sea",
 	}
 	
-	hook.Add("Think","joyexample",function()
-		for i,pl in pairs(player.GetAll()) do
-			if pl:IsConnected() then
-				umsg.Start("joyexample",pl)
-					for k,v in pairs(exjcon) do
-						if type(v) == "table" and v.IsJoystickReg then
-							local val = joystick.Get(pl,v.uid)
-							if v.type == "digital" then
-								umsg.Short(1)
-								umsg.String(v.uid)
-								umsg.Bool(val or false)
-							else
-								umsg.Short(2)
-								umsg.String(v.uid)
-								umsg.Float(val or 0)
-							end
+	hook.Add( "Think","joyexample",function()
+		for _, ply in ipairs( player.GetAll() ) do
+			if ( not ply:IsConnected() ) then continue end
+		
+			umsg.Start( "joyexample", ply )
+				for k,v in pairs( exjcon ) do
+					if ( type( v ) == "table" and v.IsJoystickReg ) then
+						local val = joystick.Get( ply, v.uid )
+						if ( v.type == "digital" ) then
+							umsg.Short( 1 )
+							umsg.String( v.uid )
+							umsg.Bool( val or false )
+						else
+							umsg.Short( 2 )
+							umsg.String( v.uid )
+							umsg.Float( val or 0 )
 						end
 					end
-					umsg.Short(0)
-				umsg.End()
-			end
+				end
+				umsg.Short( 0 )
+			umsg.End()
 		end
 	end)
 end
-
-hook.Add("JoystickInitialize","joyexample",joyexample)
+hook.Add( "JoystickInitialize","joyexample",joyexample )
