@@ -127,7 +127,7 @@ jcon.register = function( dat )
 		end
 		
 		for k, v in pairs( player.GetAll() ) do
-			if ( v:IsConnected( ) then
+			if ( v:IsConnected() ) then
 				catreg:Send(v)
 			end
 		end
@@ -176,11 +176,11 @@ jcon.isValidUID = function( uid )
 		return false, "uid is longer than 20 characters"
 	end
 	for k, v in pairs( string.Explode( "", uid ) ) do
-		if ( not string.find( [[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.<>?:[]{}\|1234567890-=!@#$%^&*( )_+]],v ) then
+		if ( not string.find( [[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.<>?:[]{}\|1234567890-=!@#$%^&*()_+]],v ) ) then
 			return false, "uid contains an illegal character"
 		end
 	end
-	if ( string.find(uid, "ent_" ) then
+	if ( string.find(uid, "ent_" ) ) then
 		return false, "uid contains \"ent_\""
 	end
 	
@@ -220,7 +220,7 @@ jcon.isValidUID = function( uid )
 		"clear",
 	}
 	for k, v in pairs( banlist ) do
-		if ( uid:find(v ) then
+		if ( uid:find(v) ) then
 			ErrorNoHalt( "WARNING: UID contains \"" .. v .. "\", and may cause the joystick module to fail." )
 		end
 	end
@@ -245,7 +245,7 @@ joystick.Get = function( pl, uid )
 		return nil, 1
 	end
 	
-	if ( not dat.datamap) or dat.datamap == "" ) then
+	if ( not dat.datamap or dat.datamap == "" ) then
 		-- Data not xmitting/xmitted
 		return nil, 2
 	end
@@ -322,7 +322,7 @@ joystick.ccupdate = function( pl, cmd, args )
 				end
 			end
 		end
-	elseif ( args[1]:find(" " ) then
+	elseif ( args[1]:find(" ") ) then
 		-- Header data
 		dat.rawheader = dat.rawheader .. tostring( args[1] )
 	else

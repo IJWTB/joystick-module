@@ -129,7 +129,7 @@ function ENT:WithdrawUID(i, uid)
 			jcon.wireModInstances[uid][self.Entity] = nil
 			local count = 0
 			for k, v in pairs(jcon.wireModInstances[uid]) do
-				if ( IsEntity(k) and v and k:HasUID(uid ) then
+				if ( IsEntity(k) and v and k:HasUID(uid) ) then
 					count = count+1
 				end
 			end
@@ -240,21 +240,21 @@ hook.Add("JoystickUpdate", "gmod_wire_joystick", function(pl, header)
 end)
 
 function ENT:PollJoystick(pl_upd)
-	if ( self.lastpoll == CurTime( ) then
+	if ( self.lastpoll == CurTime() ) then
 		return
 	end
 	self.lastpoll = CurTime()
 	
 	local pl
 	if ( self.Pod ) then
-		if ( self.Pod:IsValid( ) then
+		if ( self.Pod:IsValid() ) then
 			pl = self.Pod:GetPassenger()
 		end
 	else
 		pl = self:GetPlayer()
 	end
 	
-	if ( pl == pl_upd and IsEntity(pl ) then
+	if ( pl == pl_upd and IsEntity(pl) ) then
 		for i = 1, 8 do
 			local dat = self.data[i]
 			dat.value = 0
@@ -299,7 +299,7 @@ function ENT:ApplyDupeInfo(ply, ent, info, GetEntByID)
 	end
 end
 function MakeWireJoystick_Multi(pl, Pos, Ang, ...)-- UID, type, description, min, max)
-	if ( not pl:CheckLimit("wire_joysticks" ) then
+	if ( not pl:CheckLimit("wire_joysticks" ) ) then
 		return false
 	end
 	
@@ -326,7 +326,7 @@ function MakeWireJoystick_Multi(pl, Pos, Ang, ...)-- UID, type, description, min
 	end
 	
 	local wire_joystick = ents.Create("gmod_wire_joystick_multi")
-	if ( not wire_joystick:IsValid( ) then
+	if ( not wire_joystick:IsValid() ) then
 		return false
 	end
 	
@@ -336,7 +336,7 @@ function MakeWireJoystick_Multi(pl, Pos, Ang, ...)-- UID, type, description, min
 	wire_joystick:Spawn()
 	
 	--[[
-	if ( wire_joystick:GetPhysicsObject():IsValid( ) then
+	if ( wire_joystick:GetPhysicsObject():IsValid() ) then
 		wire_joystick:GetPhysicsObject():EnableMotion(not frozen)
 	end
 	]]

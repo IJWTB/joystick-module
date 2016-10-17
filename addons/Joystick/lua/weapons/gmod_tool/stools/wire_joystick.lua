@@ -133,7 +133,7 @@ function TOOL:Reload( trace )
 		self:SetStage( 1 )
 		return true
 	elseif ( self:GetStage() == 1 ) then
-		if ( self.PodCont:GetTable().pl ~= self:GetOwner( ) then
+		if ( self.PodCont:GetTable().pl ~= self:GetOwner() ) then
 			return false
 		end
 		if ( trace.Entity.GetPassenger ) then
@@ -171,7 +171,7 @@ if ( SERVER ) then
 		end
 		
 		local wire_joystick = ents.Create( "gmod_wire_joystick" )
-		if ( not wire_joystick:IsValid( ) then
+		if ( not wire_joystick:IsValid() ) then
 			return false
 		end
 		
@@ -180,7 +180,7 @@ if ( SERVER ) then
 		wire_joystick:SetModel( Model( MODEL ) )
 		wire_joystick:Spawn()
 		
-		if ( wire_joystick:GetPhysicsObject():IsValid( ) then
+		if ( wire_joystick:GetPhysicsObject():IsValid() ) then
 			wire_joystick:GetPhysicsObject():EnableMotion(not frozen)
 		end
 		
@@ -199,7 +199,7 @@ end
 ]]
 
 function TOOL:UpdateGhostWirejoystick( ent, player )
-	if ( IsValid( ent ) ) then return end
+	if ( not IsValid( ent ) ) then return end
 
 	local tr 	= util.GetPlayerTrace( player, player:GetAimVector() )
 	local trace = util.TraceLine( tr )
@@ -281,7 +281,7 @@ if ( CLIENT and joystick ) then
 	surface.CreateFont( "Trebuchet20", {size = 20, weight = 500, antialias = true, font = "trebuchet"} )
 
 	function TOOL.DrawToolScreen( w, h )
-		local b, e = pcall( function( )
+		local b, e = pcall( function()
 			local w, h = tonumber( w ) or 256, tonumber( h ) or 256
 			surface.SetDrawColor( 0, 0, 0, 255 )
 			surface.DrawRect( 0, 0, w, h )
@@ -300,7 +300,7 @@ if ( CLIENT and joystick ) then
 			end
 			local reg = jcon.getRegisterByUID( uid )
 			if ( reg and reg.IsJoystickReg ) then
-				if ( reg:IsBound( ) then
+				if ( reg:IsBound() ) then
 					local val = reg:GetValue()
 					if ( type( val ) == "number" ) then
 						surface.SetDrawColor( 255, 0, 0, 255 )
