@@ -27,16 +27,19 @@ TOOL.ClientConVar["max"] = "1"
 
 cleanup.Register( "wire_joysticks" )
 
-usermessage.Hook( "joywarn", function( um )
-	local t = um:ReadShort()
-	if ( t == 1 ) then
-		GAMEMODE:AddNotify( "Wire Joystick: UID in use by another player.", NOTIFY_ERROR, 10 )
-		surface.PlaySound( "buttons/button10.wav" )
-	elseif ( t == 2 ) then
-		GAMEMODE:AddNotify( "Wire Joystick: UID ", um:ReadString(), " in use by another player.", NOTIFY_ERROR, 10 )
-		surface.PlaySound( "buttons/button10.wav" )
-	end
-end)
+if CLIENT then
+    net.Receive( "joystick.warn", function( len )
+        local t = net.ReadUInt( 3 )
+        
+        if ( t == 1 ) then
+            notification.AddLegacy( "Wire Joystick: UID in use by another player.", NOTIFY_ERROR, 10 )
+            surface.PlaySound( "buttons/button10.wav" )
+        elseif ( t == 2 ) then
+            notification.AddLegacy( "Wire Joystick: UID " .. net.ReadString() .. " in use by another player.", NOTIFY_ERROR, 10 )
+            surface.PlaySound( "buttons/button10.wav" )
+        end
+    end )
+end
 
 function TOOL.sanitizeUID( uid )
 	uid = tostring( uid )
@@ -72,9 +75,9 @@ function TOOL:LeftClick( trace )
 	end
 	
 	if ( status == 2 ) then
-		umsg.Start( "joywarn", ply )
-			umsg.Short( 1 )
-		umsg.End()
+		net.Start( "joystick.warn" )
+			net.WriteUInt( 1, 3 )
+		net.Send( ply )
 		return false
 	end
 	

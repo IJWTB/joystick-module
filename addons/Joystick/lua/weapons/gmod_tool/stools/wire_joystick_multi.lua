@@ -39,11 +39,12 @@ end
 
 cleanup.Register( "wire_joysticks" )
 
---[[usermessage.Hook( "joywarn", function( um )
-	local t = um:ReadShort()
+--[[net.Receive( "joystick.warn", function( len )
+	local t = net.ReadUInt( 3 )
+    
 	if ( t == 1 ) then
-		local _uid = um:ReadString() or ""
-		GAMEMODE:AddNotify( "Wire Joystick: UID \"".._uid.."\" in use by another player.", NOTIFY_ERROR, 10 )
+		local _uid = net.ReadString() or ""
+		notification.AddLegacy( "Wire Joystick: UID \"".._uid.."\" in use by another player.", NOTIFY_ERROR, 10 )
 		surface.PlaySound( "buttons/button10.wav" )
 	end
 end)]]
@@ -76,10 +77,10 @@ function TOOL:LeftClick( trace )
 					status = 1
 				elseif ( status ~= 1 ) then
 					status = 2
-					umsg.Start( "joywarn", ply )
-						umsg.Short( 1 )
-						umsg.String( _uid )
-					umsg.End()
+					net.Start( "joystick.warn" )
+						net.WriteUInt( 1, 3 )
+						net.WriteString( _uid )
+					net.Send( ply )
 				end
 			end
 		end
@@ -117,11 +118,11 @@ function TOOL:LeftClick( trace )
 					-- Allow override, everyone is allowed to use "jm_"
 				elseif ( status ~= 1 ) then
 					status = 2
-					-- This usermessage requires stools/wire_joystick.lua
-					umsg.Start( "joywarn", ply )
-						umsg.Short( 2 )
-						umsg.String( _uid )
-					umsg.End()
+					-- This net message requires stools/wire_joystick.lua
+					net.Start( "joystick.warn" )
+						net.WriteUInt( 2, 3 )
+						net.WriteString( _uid )
+					net.Send( ply )
 				end
 			end
 		end

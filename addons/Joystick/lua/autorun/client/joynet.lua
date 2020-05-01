@@ -95,25 +95,25 @@ joysticknetstart = function()
 			if ( joynet.buffer ~= out ) then
 				joynet.buffer = out
 				-- Msg( joynet.buffer, " sent\n" )
-				RunConsoleCommand( "ja", unpack(string.Explode(" ", joynet.buffer)) )
+				RunConsoleCommand( "joystick_update", unpack(string.Explode(" ", joynet.buffer)) )
 				joynet.updateNext = CurTime() + joynet.updateRate
 			else
 				-- Don't change update rate
 			end
 		elseif ( joynet.updateHeader and joynet.updateHeader < CurTime() ) then
 			if ( joynet.headerCancel ) then
-				RunConsoleCommand( "ja", "HEADER", "CANCEL" )
+				RunConsoleCommand( "joystick_update", "HEADER", "CANCEL" )
 				-- Msg( "SENT HEADER CANCEL\n" )
 				joynet.headerCancel = nil
 				joynet.updateHeader = CurTime() + joynet.updateRate
 			elseif ( joynet.headerBuffer ) then
 				if ( joynet.headerBuffer[1] ) then
-					RunConsoleCommand( "ja", table.remove(joynet.headerBuffer, 1) )
+					RunConsoleCommand( "joystick_update", table.remove(joynet.headerBuffer, 1) )
 					joynet.updateHeader = CurTime() + joynet.updateRate
 					-- Msg( "SENT HEADER FRAGMENT\n" )
 				else
 					joynet.headerBUffer = nil
-					RunConsoleCommand( "ja", "HEADER", "FINISH" )
+					RunConsoleCommand( "joystick_update", "HEADER", "FINISH" )
 					-- Msg( "SENT HEADER FINISH\n" )
 					joynet.updateHeader = nil
 					joynet.updateNext = CurTime() + joynet.updateRate

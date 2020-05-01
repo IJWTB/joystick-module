@@ -1,3 +1,7 @@
+util.AddNetworkString( "joystick.update" )
+util.AddNetworkString( "joystick.warn" )
+util.AddNetworkString( "joystick.impulse" )
+
 AddCSLuaFile( "autorun/joyserializer.lua" )
 AddCSLuaFile( "autorun/client/joystick.lua" )
 AddCSLuaFile( "autorun/client/joynet.lua" )
@@ -115,15 +119,15 @@ jcon.register = function( dat )
 		
 		jcon.binds[catreg.uid] = catreg
 		
-		catreg.Send = function( self, pl )
-			umsg.Start( "ja", pl )
-				umsg.String( catreg.uid )
-				umsg.Bool( catreg.type == "analog" and true or false )
-				umsg.String( catreg.description )
-				umsg.String( catreg.category )
-				umsg.Float( catreg.max or 0 )
-				umsg.Float( catreg.min or 0 )
-			umsg.End()
+		catreg.Send = function( self, ply )
+			net.Start( "joystick.update" )
+				net.WriteString( catreg.uid )
+				net.WriteBool( catreg.type == "analog" and true or false )
+				net.WriteString( catreg.description )
+				net.WriteString( catreg.category )
+				net.WriteFloat( catreg.max or 0 )
+				net.WriteFloat( catreg.min or 0 )
+			net.Send( ply )
 		end
 		
 		for k, v in pairs( player.GetAll() ) do
@@ -159,13 +163,10 @@ end
 
 jcon.unregister = function( uid )
 	jcon.binds[uid] = nil
-	
-	local filter = RecipientFilter()
-	filter:AddAllPlayers()
-	umsg.Start( "joystickimpulse", filter )
-		umsg.String( "REMOVE" )
-		umsg.String( uid )
-	umsg.End()
+    
+	net.Start( "joystick.impulse" )
+		net.WriteString( uid )
+	net.Broadcast()
 end
 
 jcon.isValidUID = function( uid )
@@ -292,6 +293,9 @@ hook.Add( "PlayerInitialSpawn", "joystickinitialspawn", function( pl )
 end)
 
 joystick.ccupdate = function( pl, cmd, args )
+    
+    if not args[1] then return end
+    
 	local dat = joystick.data[pl]
 	if ( not dat ) then
 		joystick.data[pl] = {}
@@ -329,12 +333,10 @@ joystick.ccupdate = function( pl, cmd, args )
 		-- Data map
 		dat.datamap = tostring( args[1] )
 		
-		hook.Call( "JoystickUpdate", GAMEMODE, pl, dat.header )
+		hook.Run( "JoystickUpdate", pl, dat.header )
 	end
 end
-
-concommand.Add( "j", joystick.ccupdate )
-concommand.Add( "ja", joystick.ccupdate )
+concommand.Add( "joystick_update", joystick.ccupdate )
 
 hook.Add( "Initialize", "JoystickInitialize", function()
 	hook.Run( "JoystickInitialize" )

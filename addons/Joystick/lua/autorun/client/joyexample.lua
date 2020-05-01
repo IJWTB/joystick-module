@@ -158,18 +158,18 @@ hook.Add( "JoystickInitialize", "joynet", function()
 	]]
 	
 	local buffer = {}
-	usermessage.Hook( "joyexample", function( bf )
+	net.Receive( "joystick.example", function( len )
 		for i = 1, 100 do
-			local t = bf:ReadShort()
+			local t = net.ReadUInt( 3 )
 			if ( t == 1 ) then
-				buffer[bf:ReadString()] = bf:ReadBool()
+				buffer[net.ReadString()] = net.ReadBool()
 			elseif ( t == 2 ) then
-				buffer[bf:ReadString()] = bf:ReadFloat()
+				buffer[net.ReadString()] = net.ReadFloat()
 			else
 				break
 			end
 		end
-	end)
+	end )
 	
 	function exjcon.HUDPaint()
 		surface.SetDrawColor( 0, 0, 0, 127 )

@@ -16,6 +16,8 @@ reg:IsBound()
 local exjcon = {}
 
 local joyexample = function()
+    util.AddNetworkString( "joystick.example" )
+
 	exjcon.pitch = jcon.register{
 		uid = "ex_1",
 		type = "analog",
@@ -114,28 +116,28 @@ local joyexample = function()
 		category = "Fight Sea",
 	}
 	
-	hook.Add( "Think","joyexample",function()
+	hook.Add( "Think", "joystick.example", function()
 		for _, ply in ipairs( player.GetAll() ) do
 			if ( not ply:IsConnected() ) then continue end
 		
-			umsg.Start( "joyexample", ply )
+			net.Start( "joystick.example" )
 				for k,v in pairs( exjcon ) do
 					if ( type( v ) == "table" and v.IsJoystickReg ) then
 						local val = joystick.Get( ply, v.uid )
 						if ( v.type == "digital" ) then
-							umsg.Short( 1 )
-							umsg.String( v.uid )
-							umsg.Bool( val or false )
+							net.WriteUInt( 1, 3 )
+							net.WriteString( v.uid )
+							net.WriteBool( val or false )
 						else
-							umsg.Short( 2 )
-							umsg.String( v.uid )
-							umsg.Float( val or 0 )
+							net.WriteUInt( 2, 3 )
+							net.WriteString( v.uid )
+							net.WriteFloat( val or 0 )
 						end
 					end
 				end
-				umsg.Short( 0 )
-			umsg.End()
+				net.WriteUInt( 0, 3 )
+			net.Send( ply )
 		end
 	end)
 end
-hook.Add( "JoystickInitialize","joyexample",joyexample )
+hook.Add( "JoystickInitialize", "joyexample", joyexample )

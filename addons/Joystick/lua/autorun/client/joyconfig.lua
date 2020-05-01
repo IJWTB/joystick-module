@@ -2198,41 +2198,38 @@ hook.Add("Think", "joystickProcessStack", function()
 	
 	if ( delta > 0 ) then
 		if ( lastChangeNotify < CurTime() - 5 ) then
-			GAMEMODE:AddNotify( "Joystick bindings have changed!", NOTIFY_GENERIC, 3 )
+			notification.AddLegacy( "Joystick bindings have changed!", NOTIFY_GENERIC, 3 )
 			surface.PlaySound("ambient/water/drip"..math.random(1, 4)..".wav")
 			lastChangeNotify = CurTime()
 		end
 	end
 end)
 
-usermessage.Hook( "ja", function( bf )
+net.Receive( "joystick.update", function( len )
 	local reg = {}
-	reg.uid = bf:ReadString()
-	reg.type = bf:ReadBool() and "analog" or "digital"
-	reg.description = bf:ReadString()
-	reg.category = bf:ReadString()
+	reg.uid = net.ReadString()
+	reg.type = net.ReadBool() and "analog" or "digital"
+	reg.description = net.ReadString()
+	reg.category = net.ReadString()
 	if ( reg.type ) then
-		reg.max = bf:ReadFloat()
-		reg.min = bf:ReadFloat()
+		reg.max = net.ReadFloat()
+		reg.min = net.ReadFloat()
 	else
-		bf:ReadFloat()
-		bf:ReadFloat()
+		net.ReadFloat()
+		net.ReadFloat()
 	end
 	
 	table.insert( stackUnReg, reg.uid )
 	table.insert( stackReg, reg )
 	-- jcon.unregister( reg.uid )
 	-- jcon.register( reg )
-end)
+end )
 
-usermessage.Hook( "joystickimpulse", function( bf )
-	local action = bf:ReadString()
-	if (  action == "REMOVE"  ) then
-		local uid = bf:ReadString()
-		table.insert( stackUnReg, uid )
-		-- jcon.unregister( uid )
-	end
-end)
+net.Receive( "joystick.impulse", function( len )
+    local uid = net.ReadString()
+    table.insert( stackUnReg, uid )
+    -- jcon.unregister( uid )
+end )
 
 jcon.shutDown = function()
 	if ( not joystick ) then
