@@ -1,6 +1,6 @@
-TOOL.Tab			= "Wire"
+TOOL.Tab		= "Wire"
 TOOL.Category		= "Input, Output"
-TOOL.Name			= "Joystick"
+TOOL.Name		= "#tool.wire_joystick.name"
 TOOL.Command		= nil
 TOOL.ConfigName		= ""
 
